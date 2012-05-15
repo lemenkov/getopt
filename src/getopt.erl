@@ -30,7 +30,7 @@
 %% Atom indicating the data type that an argument can be converted to.
 -type arg_type()                                :: 'atom' | 'binary' | 'boolean' | 'float' | 'integer' | 'string'.
 %% Data type that an argument can be converted to.
--type arg_value()                               :: atom() | binary() | boolean() | float() | integer() | string().
+-type arg_value()                               :: atom() | binary() | bool() | float() | integer() | string().
 %% Argument specification.
 -type arg_spec()                                :: arg_type() | {arg_type(), arg_value()} | undefined.
 %% Option type and optional default argument.
@@ -392,15 +392,14 @@ to_type(_Type, Arg) ->
     Arg.
 
 
--spec is_arg_true(string()) -> boolean().
+-spec is_arg_true(string()) -> bool().
 is_arg_true(Arg) ->
     (Arg =:= "true") orelse (Arg =:= "t") orelse
     (Arg =:= "yes") orelse (Arg =:= "y") orelse
     (Arg =:= "on") orelse (Arg =:= "enabled") orelse
     (Arg =:= "1").
 
-
--spec is_arg_false(string()) -> boolean().
+-spec is_arg_false(string()) -> bool().
 is_arg_false(Arg) ->
     (Arg =:= "false") orelse (Arg =:= "f") orelse
     (Arg =:= "no") orelse (Arg =:= "n") orelse
@@ -408,7 +407,7 @@ is_arg_false(Arg) ->
     (Arg =:= "0").
 
 
--spec is_valid_arg(arg_spec(), nonempty_string()) -> boolean().
+-spec is_valid_arg(arg_spec(), nonempty_string()) -> bool().
 is_valid_arg({Type, _DefaultArg}, Arg) ->
     is_valid_arg(Type, Arg);
 is_valid_arg(boolean, Arg) ->
@@ -421,7 +420,7 @@ is_valid_arg(_Type, _Arg) ->
     true.
 
 
--spec is_implicit_arg(arg_spec(), nonempty_string()) -> boolean().
+-spec is_implicit_arg(arg_spec(), nonempty_string()) -> bool().
 is_implicit_arg({Type, _DefaultArg}, Arg) ->
     is_implicit_arg(Type, Arg);
 is_implicit_arg(boolean, Arg) ->
@@ -432,20 +431,20 @@ is_implicit_arg(_Type, _Arg) ->
     false.
 
 
--spec is_boolean_arg(string()) -> boolean().
+-spec is_boolean_arg(string()) -> bool().
 is_boolean_arg(Arg) ->
     LowerArg = string:to_lower(Arg),
     is_arg_true(LowerArg) orelse is_arg_false(LowerArg).
 
 
--spec is_integer_arg(string()) -> boolean().
+-spec is_integer_arg(string()) -> bool().
 is_integer_arg("-" ++ Tail) ->
     is_non_neg_integer_arg(Tail);
 is_integer_arg(Arg) ->
     is_non_neg_integer_arg(Arg).
 
 
--spec is_non_neg_integer_arg(string()) -> boolean().
+-spec is_non_neg_integer_arg(string()) -> bool().
 is_non_neg_integer_arg([Head | Tail]) when Head >= $0, Head =< $9 ->
     is_non_neg_integer_arg(Tail);
 is_non_neg_integer_arg([_Head | _Tail]) ->
@@ -454,7 +453,7 @@ is_non_neg_integer_arg([]) ->
     true.
 
 
--spec is_non_neg_float_arg(string()) -> boolean().
+-spec is_non_neg_float_arg(string()) -> bool().
 is_non_neg_float_arg([Head | Tail]) when (Head >= $0 andalso Head =< $9) orelse Head =:= $. ->
     is_non_neg_float_arg(Tail);
 is_non_neg_float_arg([_Head | _Tail]) ->
