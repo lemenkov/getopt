@@ -119,11 +119,11 @@ parse_long_option(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, OptArg) ->
             parse_long_option_assigned_arg(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, Long, Arg);
 
         Long ->
-            case lists:keyfind(Long, ?OPT_LONG, OptSpecList) of
-                {Name, _Short, Long, undefined, _Help} ->
+            case lists:keysearch(Long, ?OPT_LONG, OptSpecList) of
+                {value, {Name, _Short, Long, undefined, _Help}}->
                     parse(OptSpecList, [Name | OptAcc], ArgAcc, ArgPos, Args);
 
-                {_Name, _Short, Long, _ArgSpec, _Help} = OptSpec ->
+                {value, {_Name, _Short, Long, _ArgSpec, _Help} = OptSpec} ->
                     %% The option argument string is empty, but the option requires
                     %% an argument, so we look into the next string in the list.
                     %% e.g ["--port", "1000"]
@@ -141,8 +141,8 @@ parse_long_option(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, OptArg) ->
                                      [string()], string(), string(), string()) ->
                                             {ok, {[option()], [string()]}}.
 parse_long_option_assigned_arg(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, Long, Arg) ->
-    case lists:keyfind(Long, ?OPT_LONG, OptSpecList) of
-        {_Name, _Short, Long, ArgSpec, _Help} = OptSpec ->
+    case lists:keysearch(Long, ?OPT_LONG, OptSpecList) of
+        {value, {_Name, _Short, Long, ArgSpec, _Help} = OptSpec} ->
             case ArgSpec of
                 undefined ->
                     throw({error, {invalid_option_arg, OptStr}});
@@ -202,11 +202,11 @@ parse_short_option(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, OptArg) ->
     parse_short_option(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, first, OptArg).
 
 parse_short_option(OptSpecList, OptAcc, ArgAcc, ArgPos, Args, OptStr, OptPos, [Short | Arg]) ->
-    case lists:keyfind(Short, ?OPT_SHORT, OptSpecList) of
-        {Name, Short, _Long, undefined, _Help} ->
+    case lists:keysearch(Short, ?OPT_SHORT, OptSpecList) of
+        {value, {Name, Short, _Long, undefined, _Help}} ->
             parse_short_option(OptSpecList, [Name | OptAcc], ArgAcc, ArgPos, Args, OptStr, first, Arg);
 
-        {_Name, Short, _Long, ArgSpec, _Help} = OptSpec ->
+        {value, {_Name, Short, _Long, ArgSpec, _Help} = OptSpec} ->
             %% The option has a specification, so it requires an argument.
             case Arg of
                 [] ->
