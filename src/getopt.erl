@@ -637,7 +637,7 @@ usage_help_text({_Name, _Short, _Long, _ArgSpec, Help}) ->
                                    {MaxOptionLength :: non_neg_integer(), usage_line_with_length()}.
 get_max_option_length({OptionText, HelpText}, PrevMaxOptionLength) ->
     OptionLength = length(OptionText),
-    {erlang:max(OptionLength, PrevMaxOptionLength), {OptionLength, OptionText, HelpText}}.
+    {case (OptionLength > PrevMaxOptionLength) of true -> OptionLength; _ -> PrevMaxOptionLength end, {OptionLength, OptionText, HelpText}}.
 
 
 %% @doc Format the usage line that is shown for the options' usage. Each usage
